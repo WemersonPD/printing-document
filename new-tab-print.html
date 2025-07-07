@@ -68,17 +68,14 @@
                 // Open in new window and print
                 const printWindow = window.open(blobUrl, '_blank');
                 
-                setTimeout(() => {
-                    if (printWindow && !printWindow.closed) {
-                        printWindow.print();
-                        // Cleanup
-                        URL.revokeObjectURL(blobUrl);
+                // Check if the print window is still open
+                if (!printWindow || printWindow.closed) return
 
-                        // Close the print window after printing
-                        // printWindow.close();
-                     
-                    }
-                }, 1000);
+                // Listen for the load event of the new window
+                printWindow.onload = function() {
+                    // When the PDF is loaded, trigger print
+                    printWindow.print();
+                };
             } catch (error) {
                 console.error('Error printing:', error);
             }
